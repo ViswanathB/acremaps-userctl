@@ -1,0 +1,14 @@
+{
+    "kratos": {
+        "host": "alfa.nobel.us1c.b.gce.acremaps.one",
+        "database": "kratos",
+        "user": "kratos",
+        "password": "BnFBdF6TBFQnUnVxZLMaMzpaMHrNeaJC"
+    },
+    "nobel_db": {
+        "host": "nobel.acremaps.one",
+        "database": "nobel",
+        "user": "postgres",
+        "password": "clay_tan_coddle_eyepiece_spoor_agenda_sectary_mizzen_servile"
+    }
+}
