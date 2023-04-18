@@ -6,6 +6,8 @@ data/config_dev.json
 
 temp/*
 
+#pycache
+__pycache__/*
 
 #vscode
 .vscode/*
