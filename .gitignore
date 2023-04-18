@@ -3,6 +3,7 @@ e4usrctl/*
 
 #passwords in config
 data/config_dev.json
+data/config_stag.json
 
 temp/*
 

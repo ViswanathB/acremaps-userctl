@@ -10,3 +10,9 @@ Verify User is present in Nobel DB -> If user is present, mark him/her for DELET
   4. SET email = a new UUID, email has to be unique and doesn't let me make it as NULL
 
 Kratos ID will be removed irrespective of user existing in Nobel DB
+
+# TO run
+
+```
+python main.py --config_file data/config_dev.json --user_list data/sample_input_file.txt
+```
