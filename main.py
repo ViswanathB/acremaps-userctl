@@ -9,7 +9,7 @@ def delete_users(args: Any):
 
         delete_user.delete(args.user_list)
     except Exception as ex:
-        print(f"Exception occurs : {str(ex)}")
+        print(f"Exception occured : {str(ex)}")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,11 @@
 # environment
 e4usrctl/*
 
+#passwords in config
+data/config_dev.json
 
 temp/*
+
+
+#vscode
+.vscode/*

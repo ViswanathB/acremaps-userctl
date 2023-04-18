@@ -1,4 +1,5 @@
 {
+    "env": "development",
     "kratos": {
         "host": "alfa.nobel.us1c.b.gce.acremaps.one",
         "database": "kratos",
