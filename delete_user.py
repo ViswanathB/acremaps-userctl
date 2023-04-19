@@ -71,12 +71,14 @@ class DeleteUser(object):
             kratos_id_null_query = f"UPDATE nobel_{self.env}.farm_user SET kratos_uuid = NULL WHERE email = '{email}';"
             set_username_query = f"UPDATE nobel_{self.env}.farm_user SET username = '{email}' WHERE email = '{email}';"
             update_name_query = f"UPDATE nobel_{self.env}.farm_user SET name = 'USER IS DELETED, EMAIL PRESERVED IN username COLUMN' WHERE email = '{email}';"
-            delete_email_query = f"UPDATE nobel_{self.env}.farm_user SET email = '{str(uuid.uuid4()).replace('-', '') + '@dummy.com'}' WHERE email ='{email}';"
+            delete_username_query = f"UPDATE nobel_{self.env}.farm_user SET username = '{str(uuid.uuid4()).replace('-', '')}' WHERE email ='{email}';"
+            delete_email_query = f"UPDATE nobel_{self.env}.farm_user SET email = '{str(uuid.uuid4()).replace('-', '')}' WHERE email ='{email}';"
             # fmt: on
 
             self.__run_postgres_update(self.__db_conn, kratos_id_null_query)
             self.__run_postgres_update(self.__db_conn, set_username_query)
             self.__run_postgres_update(self.__db_conn, update_name_query)
+            self.__run_postgres_update(self.__db_conn, delete_username_query)
             self.__run_postgres_update(self.__db_conn, delete_email_query)
         except Exception as ex:
             raise Exception(f"Nobel DB is throwing exception {str(ex)} while marking record {email} for deletion")
