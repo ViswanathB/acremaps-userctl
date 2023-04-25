@@ -30,11 +30,10 @@ class DeleteUser(object):
             password=db_config["password"],
         )
         self.kratos_url = config["kratos"]["url"]
-        self.total_users = 0
+        self.total_db_users = 0
         self.users_not_in_db = 0
         self.kratos_identities_count = 0
         self.kratos_deleted_users = 0
-        self.total_users_deleted = 0
         self.total_db_users_marked_deleted = 0
         self.total_users_processed = 0
 
@@ -84,9 +83,9 @@ class DeleteUser(object):
             raise Exception(f"Nobel DB is throwing exception {str(ex)} while marking record {email} for deletion")
 
     def __delete_kratos_user_as_admin(self, kratos_id: str) -> str:
-        req_url = self.kratos_url
-
-        response = requests.delete(req_url + kratos_id)
+        req_url = self.kratos_url + kratos_id
+        print(f"Requesting delete on URL {req_url}")
+        response = requests.delete(req_url)
 
         if response.status_code != 204:
             raise Exception(
@@ -121,22 +120,23 @@ class DeleteUser(object):
         except Exception as ex:
             raise Exception(f"Removing record {email} from kratos is throwing exception {str(ex)}")
 
-    def __process_user(self, email: str) -> None:
+    def __process_user(self, email: str, delete_db_user: bool) -> None:
         # Remove user from Kratos
         self.__remove_from_kratos(email)
 
-        if self.__is_user_present(self.__db_conn, email):
-            self.total_users += 1
-            # Mark user as deleted in DB
-            self.__mark_user_deleted(email)
-            print(f"DB record marked DELETED for {email}")
-            self.total_db_users_marked_deleted += 1
-        else:
-            self.users_not_in_db += 1
+        if delete_db_user:
+            if self.__is_user_present(self.__db_conn, email):
+                self.total_db_users += 1
+                # Mark user as deleted in DB
+                self.__mark_user_deleted(email)
+                print(f"DB record marked DELETED for {email}")
+                self.total_db_users_marked_deleted += 1
+            else:
+                self.users_not_in_db += 1
 
         self.total_users_processed += 1
 
-    def delete(self, users_list_file_path=str):
+    def delete(self, users_list_file_path: str, delete_db_user: bool):
         user_emails_list = []
         with open(users_list_file_path) as fp:
             while line := fp.readline():
@@ -145,15 +145,17 @@ class DeleteUser(object):
 
         for user_email in user_emails_list:
             try:
-                self.__process_user(user_email)
+                self.__process_user(user_email, delete_db_user)
             except Exception as ex:
                 print(f"Exception thrown for email {user_email}    : {str(ex)}")
                 continue
 
         print(f"Total users in list                   :   {len(user_emails_list)}")
-        print(f"Total users in DB                     :   {self.total_users}")
-        print(f"Users not in DB                       :   {self.users_not_in_db}")
-        print(f"Kratos identities                     :   {self.kratos_identities_count}")
+        print(f"Kratos identities found               :   {self.kratos_identities_count}")
         print(f"Kratos identities deleted             :   {self.kratos_deleted_users}")
-        print(f"Total users marked for deletion in DB :   {self.total_db_users_marked_deleted}")
+        if delete_db_user:
+            print(f"Total users in DB                     :   {self.total_db_users}")
+            print(f"Users not in DB                       :   {self.users_not_in_db}")
+            print(f"Total users marked for deletion in DB :   {self.total_db_users_marked_deleted}")
+
         print(f"Total users processed                 :   {self.total_users_processed}")
